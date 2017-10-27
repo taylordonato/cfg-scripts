@@ -10,7 +10,7 @@ then
 fi
 
 #HOSTS and HOSTNAME
-#bash $DIR/hostname.sh
+bash $DIR/hostname.sh
 
 #PASSWORD
 bash $DIR/passwd.sh
