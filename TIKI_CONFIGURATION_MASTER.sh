@@ -19,7 +19,7 @@ bash $DIR/passwd.sh
 bash $DIR/display_cfg.sh
 
 #INOGENI
-bash $DIR/inogeni.sh
+#bash $DIR/inogeni.sh
 
 #ssh keypair generation
 bash $DIR/ssh_keys.sh
