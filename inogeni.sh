@@ -42,6 +42,8 @@ if [ -d "$DIR0" ]; then
 	fi
 echo dev0 is $VID_DEV
 sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="'$DEV'-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
+else
+sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="xxxx-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
 fi
 
 if [ -d "$DIR1" ]; then 
@@ -58,6 +60,8 @@ if [ -d "$DIR1" ]; then
 	fi
 echo dev1 is $VID_DEV
 sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="'$DEV'-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
+else
+sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="xxxx-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
 fi
 
 if [ -d "$DIR2" ]; then 
@@ -70,5 +74,7 @@ if [ -d "$DIR2" ]; then
 	fi
 echo dev2 is $VID_DEV
 sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="'$DEV'-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
+else
+sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="xxxx-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
 fi
 
