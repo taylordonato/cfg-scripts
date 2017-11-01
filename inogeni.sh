@@ -1,66 +1,48 @@
 #!/bin/bash
 
 #GLOBAL VARIABLES
+VID_DIR=/etc/udev/rules.d/tsx-video-devices.rules
 DIR0=/sys/class/video4linux/video0/
 DIR1=/sys/class/video4linux/video1/
+DIR2=/sys/class/video4linux/video2/
+
+inogeni_type () {
+DEVICE=$(whiptail --title "INOGENI CONFIGURATION" --radiolist \
+"What do you need to configure on the controller?" 10 50 2 \
+"plug_n_play" "" ON \
+"airplay" "" OFF 3>&1 1>&2 2>&3)
+
+case "$DEVICE" in
+plug_n_play) ;;
+airplay) ;;
+esac
+}
 
 #LOCAL VARIABLES
 
 if [ -d "$DIR0" ]; then
-  DEV0=$(cat /sys/class/video4linux/video0/name | cut -c 1-4)
-       echo $DEV0
+  DEV=$(cat /sys/class/video4linux/video0/name | cut -c 1-4)
+inogeni_type
+if [ $DEVICE = 'plug_n_play' ]; then VID_DEV=video_pnp0 else VID_DEV=video_airplay fi
 fi
 
 if [ -d "$DIR1" ]; then
-  DEV1=$(cat /sys/class/video4linux/video1/name | cut -c 1-4)
-       echo $DEV1
+  DEV=$(cat /sys/class/video4linux/video1/name | cut -c 1-4)
+inogeni_type
+if [ $DEVICE = 'plug-n-play' ] && [ $VID_DEV = 'video_pnp0' ]; then VID_DEV=video_pnp1 fi
+elif [ $DEVICE = 'plug-n-play' ]; then VID_DEV=video_pnp0
+else VID_DEV=video_airplay
 fi
 
-host_length=${#DEV}
+if [ -d "$DIR2" ]; then
+  DEV=$(cat /sys/class/video4linux/video2/name | cut -c 1-4)
+inogeni_type
+if [ $DEVICE = 'plug-n-play' ]; then VID_DEV=video_pnp1 else VID_DEV=video_airplay fi
+fi
 
-if [ "$(whoami)" != "root" ]
-then
+if [ "$(whoami)" != "root" ]; then
     sudo su -s "$0"
     exit
 fi
 
-DEVICE=$(whiptail --title "INOGENI CONFIGURATION" --radiolist \
-"What do you need to configure on the controller?" 10 50 2 \
-"plug-n-play" "" ON \
-"airplay" "" OFF 3>&1 1>&2 2>&3)
-
-exitstatus=$?
-if [ $exitstatus = 0 ]; then
-echo
-else
-    echo "You chose Cancel."
-fi
-
-case "$DEVICE" in
-
-plug-n-play) ;;
-airplay) ;;
-esac
-
-
-ID=$(whiptail --title "INOGENI CONFIGURATION" --radiolist \
-"Please the Unique ID for the Inogeni Device" 10 50 2 \
-"$DEV0" "" OFF \
-"$DEV1" "" OFF 3>&1 1>&2 2>&3)
-
-exitstatus=$?
-if [ $exitstatus = 0 ]; then
-echo
-else
-    echo "You chose Cancel."
-fi
-
-case "$ID" in
-
-$DEV0)
-#sudo sed -i '1,/xxxx/s/xxxx/'$PNP'/' /etc/udev/rules.d/tsx-video-devices.rules
-;;
-$DEV1)
-#sudo sed -i '1,/xxxx/s/xxxx/'$AP'/' /etc/udev/rules.d/tsx-video-devices.rules
-;;
-esac
+#sed -i 's/.*'$VID_DEV'.*/SUBSYSTEM=="video4linux", ATTR{name}=="'$DEV'-INOGENI DVIUSB", SYMLINK += "'$VID_DEV'"/' $VID_DIR
